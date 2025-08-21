@@ -480,13 +480,14 @@
         function updateStatistics() {
             if (!chartData || !chartData.data) return;
             
-            const flowData = chartData.data.flow_ranking;
+            const flowData = chartData.data.flow_ranking;  // 前10名流程数据
+            const allFlowData = chartData.data.raw_data;   // 所有流程数据
             
-            // 计算统计数据
-            const totalFlows = flowData.length;
-            const totalInitiated = flowData.reduce((sum, item) => sum + item.发起流程数, 0);
-            const totalCompleted = flowData.reduce((sum, item) => sum + item.完成环比, 0);
-            const avgDuration = (flowData.reduce((sum, item) => sum + item.平均运行时长_数值, 0) / totalFlows).toFixed(1);
+            // 计算统计数据 - 使用所有流程数据计算总数
+            const totalFlows = allFlowData.length;  // 真正的总流程数
+            const totalInitiated = allFlowData.reduce((sum, item) => sum + (item.发起流程数 || 0), 0);
+            const totalCompleted = allFlowData.reduce((sum, item) => sum + (item.完成流程数 || 0), 0);
+            const avgDuration = (allFlowData.reduce((sum, item) => sum + (item.平均运行时长_数值 || 0), 0) / totalFlows).toFixed(1);
             
             // 更新页面显示
             document.getElementById('totalFlows').textContent = totalFlows;
