@@ -119,12 +119,7 @@
     </div>
     
     <div class="container">
-        <!-- 调试信息区域 -->
-        <div id="debugInfo" style="background: #f0f0f0; padding: 10px; margin-bottom: 20px; border-radius: 5px; font-family: monospace; font-size: 12px;">
-            <strong>调试信息:</strong><br>
-            <span id="debugText">页面加载中...</span>
-            <br><strong>测试信息:</strong> HTML页面已加载，等待JavaScript执行...
-        </div>
+
         
         <div class="stats-cards" id="statsCards">
             <div class="stat-card">
@@ -187,27 +182,17 @@
         // 全局变量
         let chartData = null;
         
-        // 调试信息更新函数
-        function updateDebugInfo(message) {
-            const debugText = document.getElementById('debugText');
-            if (debugText) {
-                debugText.innerHTML += '<br>' + new Date().toLocaleTimeString() + ': ' + message;
-            }
-            console.log('DEBUG:', message);
-        }
+
         let charts = {};
         
         // 页面完全加载后初始化
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
-            updateDebugInfo('DOM加载完成，开始初始化...');
-            
             // 检查Chart.js是否加载
             if (typeof Chart === 'undefined') {
-                updateDebugInfo('错误: Chart.js库未加载');
+                console.error('错误: Chart.js库未加载');
                 return;
             }
-            updateDebugInfo('Chart.js已加载');
             
             // 立即开始加载数据
             loadData();
@@ -216,10 +201,7 @@
         // 加载数据
         async function loadData() {
             try {
-                updateDebugInfo('正在获取chart_data.json...');
                 const response = await fetch('chart_data.json');
-                
-                updateDebugInfo(`Fetch响应: ${response.status} ${response.statusText}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -227,22 +209,16 @@
                 
                 chartData = await response.json();
                 
-                updateDebugInfo(`数据解析成功: success=${chartData.success}, 流程数据=${chartData.data?.flow_ranking?.length}条`);
-                
                 if (!chartData.success) {
                     throw new Error(chartData.error || '数据加载失败');
                 }
-                
-                updateDebugInfo('开始初始化图表和统计信息...');
                 
                 // 初始化所有图表和统计信息
                 initializeCharts();
                 updateStatistics();
                 
-                updateDebugInfo('图表初始化完成!');
-                
             } catch (error) {
-                updateDebugInfo('错误: ' + error.message);
+                console.error('数据加载错误:', error.message);
                 showErrorState(error.message);
             }
         }
