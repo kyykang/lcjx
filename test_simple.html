@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单测试页面</title>
+</head>
+<body>
+    <h1>简单测试页面</h1>
+    <div id="test-div">正在加载数据</div>
+    <canvas id="testCanvas" width="400" height="200"></canvas>
+    
+    <script>
+        console.log('页面开始加载...');
+        
+        window.addEventListener('load', function() {
+            console.log('页面加载完成');
+            
+            // 测试元素查找
+            const testDiv = document.getElementById('test-div');
+            const testCanvas = document.getElementById('testCanvas');
+            
+            console.log('testDiv:', testDiv);
+            console.log('testCanvas:', testCanvas);
+            
+            if (testDiv) {
+                testDiv.innerHTML = '数据加载成功！';
+                console.log('成功更新div内容');
+            }
+            
+            // 测试数据加载
+            fetch('/chart_data.json')
+                .then(response => {
+                    console.log('fetch响应状态:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('数据加载成功:', data);
+                    if (testDiv) {
+                        testDiv.innerHTML = '数据加载成功！流程数据条数: ' + (data.data && data.data.flow_ranking ? data.data.flow_ranking.length : 0);
+                    }
+                })
+                .catch(error => {
+                    console.error('数据加载失败:', error);
+                    if (testDiv) {
+                        testDiv.innerHTML = '数据加载失败: ' + error.message;
+                    }
+                });
+        });
+    </script>
+</body>
+</html>

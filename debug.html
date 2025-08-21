@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>调试页面</title>
+</head>
+<body>
+    <h1>数据加载调试</h1>
+    <div id="status">正在检查...</div>
+    <div id="output"></div>
+    
+    <script>
+        window.addEventListener('load', function() {
+            console.log('调试页面加载完成');
+            
+            const statusDiv = document.getElementById('status');
+            const outputDiv = document.getElementById('output');
+            
+            // 测试数据加载
+            fetch('chart_data.json')
+                .then(response => {
+                    console.log('Fetch响应:', response.status, response.statusText);
+                    statusDiv.textContent = `HTTP状态: ${response.status} ${response.statusText}`;
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('数据加载成功:', data);
+                    statusDiv.textContent = '数据加载成功';
+                    outputDiv.innerHTML = `
+                        <h2>数据概览</h2>
+                        <p>成功状态: ${data.success}</p>
+                        <p>流程数据条数: ${data.data?.flow_ranking?.length || 0}</p>
+                        <p>第一条数据: ${JSON.stringify(data.data?.flow_ranking?.[0] || {}, null, 2)}</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('数据加载失败:', error);
+                    statusDiv.textContent = '数据加载失败: ' + error.message;
+                    outputDiv.innerHTML = `<p style="color: red;">错误: ${error.message}</p>`;
+                });
+        });
+    </script>
+</body>
+</html>

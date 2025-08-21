@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试页面</title>
+</head>
+<body>
+    <h1>测试页面</h1>
+    <canvas id="testCanvas"></canvas>
+    
+    <script>
+        window.addEventListener('load', function() {
+            console.log('测试页面加载完成');
+            console.log('testCanvas元素:', document.getElementById('testCanvas'));
+            console.log('所有canvas元素:', document.querySelectorAll('canvas'));
+        });
+    </script>
+</body>
+</html>

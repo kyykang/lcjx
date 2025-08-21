@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简化版测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>简化版营销平台流程绩效分析</h1>
+    
+    <div class="module">
+        <h2>发起流程数及完成数排名</h2>
+        <div class="chart-container">
+            <canvas id="flowRankingChart"></canvas>
+        </div>
+    </div>
+    
+    <script>
+        window.addEventListener('load', function() {
+            console.log('简化版页面加载完成');
+            console.log('Chart.js是否加载:', typeof Chart !== 'undefined');
+            console.log('flowRankingChart元素:', document.getElementById('flowRankingChart'));
+            
+            const canvas = document.getElementById('flowRankingChart');
+            if (canvas) {
+                console.log('找到canvas元素，创建测试图表');
+                const ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['测试1', '测试2', '测试3'],
+                        datasets: [{
+                            label: '测试数据',
+                            data: [12, 19, 3],
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            } else {
+                console.error('找不到canvas元素');
+            }
+        });
+    </script>
+</body>
+</html>
