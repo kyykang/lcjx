@@ -358,6 +358,39 @@
                 </div>
 
             </div>
+            
+            <div class="module">
+                <h2 class="module-title" data-module="personalProcessRanking">
+                    个人流程处理数排名
+                    <span class="toggle-icon">▼</span>
+                </h2>
+                <div class="chart-container">
+                    <canvas id="personalProcessRankingChart"></canvas>
+                </div>
+
+            </div>
+            
+            <div class="module">
+                <h2 class="module-title" data-module="responsiblePersonProcessRanking">
+                    主要负责人流程数排名
+                    <span class="toggle-icon">▼</span>
+                </h2>
+                <div class="chart-container">
+                    <canvas id="responsiblePersonProcessRankingChart"></canvas>
+                </div>
+
+            </div>
+            
+            <div class="module">
+                <h2 class="module-title" data-module="responsiblePersonDurationRanking">
+                    主要负责人流程处理时长排名
+                    <span class="toggle-icon">▼</span>
+                </h2>
+                <div class="chart-container">
+                    <canvas id="responsiblePersonDurationRankingChart"></canvas>
+                </div>
+
+            </div>
         </div>
     </div>
     
@@ -391,11 +424,15 @@
         // 页面完全加载后初始化
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM加载完成');
+            
             // 检查Chart.js是否加载
             if (typeof Chart === 'undefined') {
                 console.error('错误: Chart.js库未加载');
                 return;
             }
+            
+            console.log('Chart.js已加载，版本:', Chart.version);
             
             // 立即开始加载数据
             loadData();
@@ -465,25 +502,40 @@
                 // 清除加载状态
                 clearLoadingState();
                 
-                // 1. 发起流程数及完成数排名
-                console.log('创建发起流程数排名图表...');
-                createFlowRankingChart();
-                
-                // 2. 流程运行时长排名
-                console.log('创建流程运行时长排名图表...');
-                createDurationRankingChart();
-                
-                // 3. 销售类流程平均运行时长排名
-                console.log('创建销售类流程图表...');
-                createCategoryDurationChart('销售类流程', 'salesDurationChart');
-                
-                // 4. 采购类流程平均运行时长排名
-                console.log('创建采购类流程图表...');
-                createCategoryDurationChart('采购类流程', 'purchaseDurationChart');
-                
-                // 5. 项目&产品管理类流程平均运行时长排名
-                console.log('创建项目管理类流程图表...');
-                createCategoryDurationChart('项目&产品管理类流程', 'projectDurationChart');
+                // 使用setTimeout确保DOM完全渲染后再创建图表
+                setTimeout(() => {
+                    // 1. 发起流程数及完成数排名
+                    console.log('创建发起流程数排名图表...');
+                    createFlowRankingChart();
+                    
+                    // 2. 流程运行时长排名
+                    console.log('创建流程运行时长排名图表...');
+                    createDurationRankingChart();
+                    
+                    // 3. 销售类流程平均运行时长排名
+                    console.log('创建销售类流程图表...');
+                    createCategoryDurationChart('销售类流程', 'salesDurationChart');
+                    
+                    // 4. 采购类流程平均运行时长排名
+                    console.log('创建采购类流程图表...');
+                    createCategoryDurationChart('采购类流程', 'purchaseDurationChart');
+                    
+                    // 5. 项目&产品管理类流程平均运行时长排名
+                    console.log('创建项目管理类流程图表...');
+                    createCategoryDurationChart('项目&产品管理类流程', 'projectDurationChart');
+                    
+                    // 6. 个人流程处理数排名
+                    console.log('创建个人流程处理数排名图表...');
+                    createPersonalProcessRankingChart();
+                    
+                    // 7. 主要负责人流程数排名
+                    console.log('创建主要负责人流程数排名图表...');
+                    createResponsiblePersonProcessRankingChart();
+                    
+                    // 8. 主要负责人流程处理时长排名
+                     console.log('创建主要负责人流程处理时长排名图表...');
+                     createResponsiblePersonDurationRankingChart();
+                 }, 100); // 延迟100毫秒确保DOM完全渲染
                 
                 console.log('所有图表初始化完成');
             } catch (error) {
@@ -682,6 +734,263 @@
             });
         }
         
+        // 创建个人流程处理数排名图表
+        function createPersonalProcessRankingChart() {
+            console.log('开始创建个人流程处理数排名图表...');
+            console.log('chartData对象:', chartData);
+            
+            const canvas = document.getElementById('personalProcessRankingChart');
+            console.log('Canvas元素:', canvas);
+            
+            if (!canvas) {
+                console.error('找不到personalProcessRankingChart canvas元素');
+                // 列出所有canvas元素
+                const allCanvas = document.querySelectorAll('canvas');
+                console.log('页面中所有canvas元素:', allCanvas);
+                return;
+            }
+            
+            console.log('Canvas尺寸:', canvas.width, 'x', canvas.height);
+            console.log('Canvas父元素:', canvas.parentElement);
+            
+            const ctx = canvas.getContext('2d');
+            console.log('Canvas上下文:', ctx);
+            const data = chartData.personal_process_ranking;
+            
+            console.log('个人流程处理数排名原始数据:', data);
+            console.log('数据类型:', typeof data, '是否为数组:', Array.isArray(data));
+            
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                console.error('个人流程处理数排名数据为空或格式错误:', data);
+                return;
+            }
+            
+            // 取前10条数据
+            const top10Data = data.slice(0, 10);
+            console.log('前10条数据:', top10Data);
+            
+            const labels = top10Data.map(item => item.人员名称);
+            const processData = top10Data.map(item => item.处理数);
+            
+            console.log('标签数据:', labels);
+            console.log('处理数数据:', processData);
+            
+            try {
+                charts.personalProcessRanking = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '处理数',
+                            data: processData,
+                            backgroundColor: 'rgba(75, 192, 192, 0.8)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: '个人流程处理数排名 (前10名)'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '处理数'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: '人员姓名'
+                                }
+                            }
+                        }
+                    }
+                });
+                 console.log('个人流程处理数排名图表创建成功:', charts.personalProcessRanking);
+                 
+                 // 强制更新图表
+                 setTimeout(() => {
+                     if (charts.personalProcessRanking) {
+                         charts.personalProcessRanking.update();
+                         console.log('图表强制更新完成');
+                     }
+                 }, 100);
+                 
+              } catch (error) {
+                  console.error('创建个人流程处理数排名图表时出错:', error);
+              }
+         }
+        
+        // 创建主要负责人流程数排名图表
+        function createResponsiblePersonProcessRankingChart() {
+            console.log('开始创建主要负责人流程数排名图表...');
+            const canvas = document.getElementById('responsiblePersonProcessRankingChart');
+            if (!canvas) {
+                console.error('找不到responsiblePersonProcessRankingChart canvas元素');
+                return;
+            }
+            
+            const ctx = canvas.getContext('2d');
+            const data = chartData.main_person_process_ranking;
+            
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                console.error('主要负责人流程数排名数据为空或格式错误:', data);
+                return;
+            }
+            
+            // 取前10条数据
+            const top10Data = data.slice(0, 10);
+            
+            const labels = top10Data.map(item => item.负责人姓名);
+            const processData = top10Data.map(item => item.处理数);
+            
+            charts.responsiblePersonProcessRanking = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '处理数',
+                        data: processData,
+                        backgroundColor: 'rgba(153, 102, 255, 0.8)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '主要负责人流程数排名 (前10名)'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '处理数'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '负责人姓名'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 解析时长文本为小时数
+        function parseTimeToHours(timeStr) {
+            if (!timeStr || timeStr === '-') return 0;
+            
+            let totalHours = 0;
+            
+            // 匹配天数
+            const dayMatch = timeStr.match(/(\d+)天/);
+            if (dayMatch) {
+                totalHours += parseInt(dayMatch[1]) * 24;
+            }
+            
+            // 匹配小时数
+            const hourMatch = timeStr.match(/(\d+)小时/);
+            if (hourMatch) {
+                totalHours += parseInt(hourMatch[1]);
+            }
+            
+            // 匹配分钟数
+            const minuteMatch = timeStr.match(/(\d+)分/);
+            if (minuteMatch) {
+                totalHours += parseInt(minuteMatch[1]) / 60;
+            }
+            
+            return totalHours;
+        }
+        
+        // 创建主要负责人流程处理时长排名图表
+        function createResponsiblePersonDurationRankingChart() {
+            console.log('开始创建主要负责人流程处理时长排名图表...');
+            const canvas = document.getElementById('responsiblePersonDurationRankingChart');
+            if (!canvas) {
+                console.error('找不到responsiblePersonDurationRankingChart canvas元素');
+                return;
+            }
+            
+            const ctx = canvas.getContext('2d');
+            const data = chartData.main_person_duration_ranking;
+            
+            console.log('主要负责人流程处理时长排名原始数据:', data);
+            
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                console.error('主要负责人流程处理时长排名数据为空或格式错误:', data);
+                return;
+            }
+            
+            // 取前10条数据
+            const top10Data = data.slice(0, 10);
+            
+            const labels = top10Data.map(item => item.负责人姓名);
+            const durationData = top10Data.map(item => {
+                const hours = parseTimeToHours(item.平均处理时长);
+                console.log(`${item.负责人姓名}: ${item.平均处理时长} -> ${hours}小时`);
+                return hours;
+            });
+            
+            charts.responsiblePersonDurationRanking = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '平均处理时长(小时)',
+                        data: durationData,
+                        backgroundColor: 'rgba(255, 159, 64, 0.8)',
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '主要负责人流程处理时长排名 (前10名)'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '平均处理时长(小时)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '负责人姓名'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
         // 更新统计信息
         function updateStatistics() {
             if (!chartData || !chartData.data) return;
@@ -730,7 +1039,10 @@
                 'durationRanking': '流程运行时长排名详情',
                 'salesDuration': '销售类流程平均运行时长排名详情',
                 'purchaseDuration': '采购类流程平均运行时长排名详情',
-                'projectDuration': '项目&产品管理类流程平均运行时长排名详情'
+                'projectDuration': '项目&产品管理类流程平均运行时长排名详情',
+                'personalProcessRanking': '个人流程处理数排名详情',
+                'responsiblePersonProcessRanking': '主要负责人流程数排名详情',
+                'responsiblePersonDurationRanking': '主要负责人流程处理时长排名详情'
             };
             modalTitle.textContent = titles[moduleType] || '详情列表';
             
@@ -804,6 +1116,21 @@
                     ).sort((a, b) => (b.平均运行时长_数值 || 0) - (a.平均运行时长_数值 || 0));
                     headers = ['排名', '流程名称', '平均运行时长', '发起流程数', '完成流程数'];
                     renderCategoryDurationTable(tableHeader, tableBody, headers, data);
+                    break;
+                case 'personalProcessRanking':
+                    data = chartData.personal_process_ranking;
+                    headers = ['排名', '人员名称', '部门名称', '处理数'];
+                    renderPersonalProcessRankingTable(tableHeader, tableBody, headers, data);
+                    break;
+                case 'responsiblePersonProcessRanking':
+                    data = chartData.main_person_process_ranking;
+                    headers = ['排名', '负责人姓名', '部门名称', '处理数'];
+                    renderResponsiblePersonProcessRankingTable(tableHeader, tableBody, headers, data);
+                    break;
+                case 'responsiblePersonDurationRanking':
+                    data = chartData.main_person_duration_ranking;
+                    headers = ['排名', '负责人姓名', '部门名称', '平均处理时长', '处理数'];
+                    renderResponsiblePersonDurationRankingTable(tableHeader, tableBody, headers, data);
                     break;
             }
         }
@@ -964,6 +1291,64 @@
                                 return 0;
                         }
                         break;
+                    case 'personalProcessRanking':
+                        switch(columnIndex) {
+                            case 1: // 人员名称
+                                aValue = a.人员名称 || '';
+                                bValue = b.人员名称 || '';
+                                break;
+                            case 2: // 部门名称
+                                aValue = a.部门名称 || '';
+                                bValue = b.部门名称 || '';
+                                break;
+                            case 3: // 处理数
+                                aValue = a.处理数 || 0;
+                                bValue = b.处理数 || 0;
+                                break;
+                            default:
+                                return 0;
+                        }
+                        break;
+                    case 'responsiblePersonProcessRanking':
+                        switch(columnIndex) {
+                            case 1: // 负责人姓名
+                                aValue = a.负责人姓名 || '';
+                                bValue = b.负责人姓名 || '';
+                                break;
+                            case 2: // 部门名称
+                                aValue = a.部门名称 || '';
+                                bValue = b.部门名称 || '';
+                                break;
+                            case 3: // 处理数
+                                aValue = a.处理数 || 0;
+                                bValue = b.处理数 || 0;
+                                break;
+                            default:
+                                return 0;
+                        }
+                        break;
+                    case 'responsiblePersonDurationRanking':
+                        switch(columnIndex) {
+                            case 1: // 负责人姓名
+                                aValue = a.负责人姓名 || '';
+                                bValue = b.负责人姓名 || '';
+                                break;
+                            case 2: // 部门名称
+                                aValue = a.部门名称 || '';
+                                bValue = b.部门名称 || '';
+                                break;
+                            case 3: // 平均处理时长
+                                aValue = a.平均处理时长_小时 || 0;
+                                bValue = b.平均处理时长_小时 || 0;
+                                break;
+                            case 4: // 处理数
+                                aValue = a.处理数 || 0;
+                                bValue = b.处理数 || 0;
+                                break;
+                            default:
+                                return 0;
+                        }
+                        break;
                 }
                 
                 // 比较值
@@ -990,6 +1375,15 @@
                     break;
                 case 'categoryDuration':
                     renderCategoryDurationTableBody(tableBody, sortedData);
+                    break;
+                case 'personalProcessRanking':
+                    renderPersonalProcessRankingTableBody(tableBody, sortedData);
+                    break;
+                case 'responsiblePersonProcessRanking':
+                    renderResponsiblePersonProcessRankingTableBody(tableBody, sortedData);
+                    break;
+                case 'responsiblePersonDurationRanking':
+                    renderResponsiblePersonDurationRankingTableBody(tableBody, sortedData);
                     break;
             }
         }
@@ -1038,6 +1432,109 @@
                     <td>${item.平均运行时长 || '-'}</td>
                     <td>${(item.发起流程数 || 0).toLocaleString()}</td>
                     <td>${(item.完成环比 || 0).toLocaleString()}</td>
+                `;
+                bodyContainer.appendChild(row);
+            });
+        }
+        
+        // 渲染个人流程处理数排名表格
+        function renderPersonalProcessRankingTable(headerContainer, bodyContainer, headers, data) {
+            // 渲染表头
+            headerContainer.innerHTML = '';
+            const headerRow = document.createElement('tr');
+            headers.forEach((header, index) => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                if (index > 0) { // 排名列不可排序
+                    th.classList.add('sortable');
+                    th.addEventListener('click', () => sortTable(data, index, th, 'personalProcessRanking'));
+                }
+                headerRow.appendChild(th);
+            });
+            headerContainer.appendChild(headerRow);
+            
+            // 渲染表格内容
+            renderPersonalProcessRankingTableBody(bodyContainer, data);
+        }
+        
+        function renderPersonalProcessRankingTableBody(bodyContainer, data) {
+            bodyContainer.innerHTML = '';
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.人员名称 || '-'}</td>
+                    <td>${item.部门名称 || '-'}</td>
+                    <td>${(item.处理数 || 0).toLocaleString()}</td>
+                `;
+                bodyContainer.appendChild(row);
+            });
+        }
+        
+        // 渲染主要负责人流程数排名表格
+        function renderResponsiblePersonProcessRankingTable(headerContainer, bodyContainer, headers, data) {
+            // 渲染表头
+            headerContainer.innerHTML = '';
+            const headerRow = document.createElement('tr');
+            headers.forEach((header, index) => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                if (index > 0) { // 排名列不可排序
+                    th.classList.add('sortable');
+                    th.addEventListener('click', () => sortTable(data, index, th, 'responsiblePersonProcessRanking'));
+                }
+                headerRow.appendChild(th);
+            });
+            headerContainer.appendChild(headerRow);
+            
+            // 渲染表格内容
+            renderResponsiblePersonProcessRankingTableBody(bodyContainer, data);
+        }
+        
+        function renderResponsiblePersonProcessRankingTableBody(bodyContainer, data) {
+            bodyContainer.innerHTML = '';
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.负责人姓名 || '-'}</td>
+                    <td>${item.部门名称 || '-'}</td>
+                    <td>${(item.处理数 || 0).toLocaleString()}</td>
+                `;
+                bodyContainer.appendChild(row);
+            });
+        }
+        
+        // 渲染主要负责人流程处理时长排名表格
+        function renderResponsiblePersonDurationRankingTable(headerContainer, bodyContainer, headers, data) {
+            // 渲染表头
+            headerContainer.innerHTML = '';
+            const headerRow = document.createElement('tr');
+            headers.forEach((header, index) => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                if (index > 0) { // 排名列不可排序
+                    th.classList.add('sortable');
+                    th.addEventListener('click', () => sortTable(data, index, th, 'responsiblePersonDurationRanking'));
+                }
+                headerRow.appendChild(th);
+            });
+            headerContainer.appendChild(headerRow);
+            
+            // 渲染表格内容
+            renderResponsiblePersonDurationRankingTableBody(bodyContainer, data);
+        }
+        
+        function renderResponsiblePersonDurationRankingTableBody(bodyContainer, data) {
+            bodyContainer.innerHTML = '';
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.负责人姓名 || '-'}</td>
+                    <td>${item.部门名称 || '-'}</td>
+                    <td>${item.平均处理时长 || '-'}</td>
+                    <td>${(item.处理数 || 0).toLocaleString()}</td>
                 `;
                 bodyContainer.appendChild(row);
             });

@@ -29,5 +29,17 @@ tmp/
 *.swp
 *.swo
 
+# 敏感数据文件 - 包含真实业务数据，不应上传到公共仓库
+*.xls
+*.xlsx
+人员效率明细.xls
+基本信息.xlsx
+流程效率明细.xls
+
+# 测试文件
+test_*.html
+debug*.html
+simple.html
+
 # 其他临时文件
 *~
