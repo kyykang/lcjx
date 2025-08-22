@@ -87,6 +87,169 @@
             border-bottom: 3px solid #3498db;
         }
         
+        .module-title {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+        
+        .module-title:hover {
+            color: #3498db;
+        }
+        
+        .toggle-icon {
+            font-size: 0.8em;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 80%;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2em;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-body {
+            padding: 0;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .detail-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s;
+        }
+        
+        .detail-table th:hover {
+            background-color: #e9ecef;
+        }
+        
+        .detail-table th.sortable::after {
+            content: ' ↕';
+            color: #6c757d;
+            font-size: 12px;
+        }
+        
+        .detail-table th.sort-asc::after {
+            content: ' ↑';
+            color: #007bff;
+        }
+        
+        .detail-table th.sort-desc::after {
+            content: ' ↓';
+            color: #007bff;
+        }
+        
+        .detail-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #555;
+        }
+        
+        .detail-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .detail-table td:first-child {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
         .chart-container {
             position: relative;
             height: 400px;
@@ -142,38 +305,78 @@
         
         <div class="modules-grid">
             <div class="module">
-                <h2>发起流程数及完成数排名</h2>
+                <h2 class="module-title" data-module="flowRanking">
+                    发起流程数及完成数排名
+                    <span class="toggle-icon">▼</span>
+                </h2>
                 <div class="chart-container">
                     <canvas id="flowRankingChart"></canvas>
                 </div>
+
             </div>
             
             <div class="module">
-                <h2>流程运行时长排名</h2>
+                <h2 class="module-title" data-module="durationRanking">
+                    流程运行时长排名
+                    <span class="toggle-icon">▼</span>
+                </h2>
                 <div class="chart-container">
                     <canvas id="durationRankingChart"></canvas>
                 </div>
+
             </div>
             
             <div class="module">
-                <h2>销售类流程平均运行时长排名</h2>
+                <h2 class="module-title" data-module="salesDuration">
+                    销售类流程平均运行时长排名
+                    <span class="toggle-icon">▼</span>
+                </h2>
                 <div class="chart-container">
                     <canvas id="salesDurationChart"></canvas>
                 </div>
+
             </div>
             
             <div class="module">
-                <h2>采购类流程平均运行时长排名</h2>
+                <h2 class="module-title" data-module="purchaseDuration">
+                    采购类流程平均运行时长排名
+                    <span class="toggle-icon">▼</span>
+                </h2>
                 <div class="chart-container">
                     <canvas id="purchaseDurationChart"></canvas>
                 </div>
+
             </div>
             
             <div class="module">
-                <h2>项目&产品管理类流程平均运行时长排名</h2>
+                <h2 class="module-title" data-module="projectDuration">
+                    项目&产品管理类流程平均运行时长排名
+                    <span class="toggle-icon">▼</span>
+                </h2>
                 <div class="chart-container">
                     <canvas id="projectDurationChart"></canvas>
                 </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <!-- 模态框 -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">详情列表</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="detail-table" id="detailTable">
+                    <thead id="tableHeader">
+                        <!-- 表头将通过JavaScript动态生成 -->
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- 表格内容将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -216,6 +419,9 @@
                 // 初始化所有图表和统计信息
                 initializeCharts();
                 updateStatistics();
+                
+                // 初始化点击事件
+                initializeClickEvents();
                 
             } catch (error) {
                 console.error('数据加载错误:', error.message);
@@ -494,6 +700,347 @@
             document.getElementById('totalInitiated').textContent = totalInitiated.toLocaleString();
             document.getElementById('totalCompleted').textContent = totalCompleted.toLocaleString();
             document.getElementById('avgDuration').textContent = avgDuration;
+        }
+        
+        // 初始化点击事件
+        function initializeClickEvents() {
+            // 为所有模块标题添加点击事件
+            const moduleTitles = document.querySelectorAll('.module-title');
+            moduleTitles.forEach(title => {
+                title.addEventListener('click', function() {
+                    const moduleType = this.getAttribute('data-module');
+                    toggleDetailList(moduleType);
+                });
+            });
+        }
+        
+        // 打开模态框显示详情
+        function toggleDetailList(moduleType, titleElement) {
+            openModal(moduleType);
+        }
+        
+        // 打开模态框
+        function openModal(moduleType) {
+            const modal = document.getElementById('detailModal');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            // 设置标题
+            const titles = {
+                'flowRanking': '发起流程数及完成数排名详情',
+                'durationRanking': '流程运行时长排名详情',
+                'salesDuration': '销售类流程平均运行时长排名详情',
+                'purchaseDuration': '采购类流程平均运行时长排名详情',
+                'projectDuration': '项目&产品管理类流程平均运行时长排名详情'
+            };
+            modalTitle.textContent = titles[moduleType] || '详情列表';
+            
+            // 填充数据
+            populateModalData(moduleType);
+            
+            // 显示模态框
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        }
+        
+        // 关闭模态框
+        function closeModal() {
+            const modal = document.getElementById('detailModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto'; // 恢复背景滚动
+        }
+        
+        // 点击模态框背景关闭
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        // ESC键关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+        
+        // 填充模态框数据
+        function populateModalData(moduleType) {
+            if (!chartData || !chartData.data) return;
+            
+            const tableHeader = document.getElementById('tableHeader');
+            const tableBody = document.getElementById('tableBody');
+            let data = [];
+            let headers = [];
+            
+            // 根据模块类型获取对应数据和表头
+            switch(moduleType) {
+                case 'flowRanking':
+                    data = chartData.data.raw_data.slice().sort((a, b) => (b.发起流程数 || 0) - (a.发起流程数 || 0));
+                    headers = ['排名', '流程名称', '发起流程数', '完成流程数', '平均运行时长', '环比', '同比'];
+                    renderFlowRankingTable(tableHeader, tableBody, headers, data);
+                    break;
+                case 'durationRanking':
+                    data = chartData.data.raw_data.slice().sort((a, b) => (b.平均运行时长_数值 || 0) - (a.平均运行时长_数值 || 0));
+                    headers = ['排名', '流程名称', '平均运行时长', '发起流程数', '完成流程数', '平均超期时长'];
+                    renderDurationRankingTable(tableHeader, tableBody, headers, data);
+                    break;
+                case 'salesDuration':
+                    data = chartData.data.raw_data.filter(item => 
+                        item.模板名称 && (item.模板名称.includes('销售') || item.模板名称.includes('客户') || item.模板名称.includes('合同'))
+                    ).sort((a, b) => (b.平均运行时长_数值 || 0) - (a.平均运行时长_数值 || 0));
+                    headers = ['排名', '流程名称', '平均运行时长', '发起流程数', '完成流程数'];
+                    renderCategoryDurationTable(tableHeader, tableBody, headers, data);
+                    break;
+                case 'purchaseDuration':
+                    data = chartData.data.raw_data.filter(item => 
+                        item.模板名称 && (item.模板名称.includes('采购') || item.模板名称.includes('付款') || item.模板名称.includes('供应商'))
+                    ).sort((a, b) => (b.平均运行时长_数值 || 0) - (a.平均运行时长_数值 || 0));
+                    headers = ['排名', '流程名称', '平均运行时长', '发起流程数', '完成流程数'];
+                    renderCategoryDurationTable(tableHeader, tableBody, headers, data);
+                    break;
+                case 'projectDuration':
+                    data = chartData.data.raw_data.filter(item => 
+                        item.模板名称 && (item.模板名称.includes('项目') || item.模板名称.includes('产品') || item.模板名称.includes('开发'))
+                    ).sort((a, b) => (b.平均运行时长_数值 || 0) - (a.平均运行时长_数值 || 0));
+                    headers = ['排名', '流程名称', '平均运行时长', '发起流程数', '完成流程数'];
+                    renderCategoryDurationTable(tableHeader, tableBody, headers, data);
+                    break;
+            }
+        }
+        
+        // 渲染发起流程数排名表格
+        function renderFlowRankingTable(headerContainer, bodyContainer, headers, data) {
+            // 渲染表头
+            headerContainer.innerHTML = '';
+            const headerRow = document.createElement('tr');
+            headers.forEach((header, index) => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                if (index > 0) { // 排名列不可排序
+                    th.classList.add('sortable');
+                    th.addEventListener('click', () => sortTable(data, index, th, 'flowRanking'));
+                }
+                headerRow.appendChild(th);
+            });
+            headerContainer.appendChild(headerRow);
+            
+            // 渲染表格内容
+            renderFlowRankingTableBody(bodyContainer, data);
+        }
+        
+        // 渲染运行时长排名表格
+        function renderDurationRankingTable(headerContainer, bodyContainer, headers, data) {
+            // 渲染表头
+            headerContainer.innerHTML = '';
+            const headerRow = document.createElement('tr');
+            headers.forEach((header, index) => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                if (index > 0) { // 排名列不可排序
+                    th.classList.add('sortable');
+                    th.addEventListener('click', () => sortTable(data, index, th, 'durationRanking'));
+                }
+                headerRow.appendChild(th);
+            });
+            headerContainer.appendChild(headerRow);
+            
+            // 渲染表格内容
+            renderDurationRankingTableBody(bodyContainer, data);
+        }
+        
+        // 渲染分类运行时长表格
+        function renderCategoryDurationTable(headerContainer, bodyContainer, headers, data) {
+            // 渲染表头
+            headerContainer.innerHTML = '';
+            const headerRow = document.createElement('tr');
+            headers.forEach((header, index) => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                if (index > 0) { // 排名列不可排序
+                    th.classList.add('sortable');
+                    th.addEventListener('click', () => sortTable(data, index, th, 'categoryDuration'));
+                }
+                headerRow.appendChild(th);
+            });
+            headerContainer.appendChild(headerRow);
+            
+            // 渲染表格内容
+            renderCategoryDurationTableBody(bodyContainer, data);
+        }
+        
+        // 表格排序功能
+        let currentSortColumn = -1;
+        let currentSortOrder = 'asc';
+        let currentTableData = [];
+        let currentTableType = '';
+        
+        function sortTable(data, columnIndex, headerElement, tableType) {
+            // 保存当前数据和表格类型
+            currentTableData = data;
+            currentTableType = tableType;
+            
+            // 确定排序方向
+            if (currentSortColumn === columnIndex) {
+                currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortOrder = 'asc';
+            }
+            currentSortColumn = columnIndex;
+            
+            // 更新表头样式
+            document.querySelectorAll('.detail-table th').forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+            });
+            headerElement.classList.add(currentSortOrder === 'asc' ? 'sort-asc' : 'sort-desc');
+            
+            // 根据列索引和表格类型进行排序
+            const sortedData = [...data].sort((a, b) => {
+                let aValue, bValue;
+                
+                switch(tableType) {
+                    case 'flowRanking':
+                        switch(columnIndex) {
+                            case 1: // 流程名称
+                                aValue = a.模板名称 || '';
+                                bValue = b.模板名称 || '';
+                                break;
+                            case 2: // 发起流程数
+                                aValue = a.发起流程数 || 0;
+                                bValue = b.发起流程数 || 0;
+                                break;
+                            case 3: // 完成流程数
+                                aValue = a.完成环比 || 0;
+                                bValue = b.完成环比 || 0;
+                                break;
+                            case 4: // 平均运行时长
+                                aValue = a.平均运行时长_数值 || 0;
+                                bValue = b.平均运行时长_数值 || 0;
+                                break;
+                            default:
+                                return 0;
+                        }
+                        break;
+                    case 'durationRanking':
+                        switch(columnIndex) {
+                            case 1: // 流程名称
+                                aValue = a.模板名称 || '';
+                                bValue = b.模板名称 || '';
+                                break;
+                            case 2: // 平均运行时长
+                                aValue = a.平均运行时长_数值 || 0;
+                                bValue = b.平均运行时长_数值 || 0;
+                                break;
+                            case 3: // 发起流程数
+                                aValue = a.发起流程数 || 0;
+                                bValue = b.发起流程数 || 0;
+                                break;
+                            case 4: // 完成流程数
+                                aValue = a.完成环比 || 0;
+                                bValue = b.完成环比 || 0;
+                                break;
+                            default:
+                                return 0;
+                        }
+                        break;
+                    case 'categoryDuration':
+                        switch(columnIndex) {
+                            case 1: // 流程名称
+                                aValue = a.模板名称 || '';
+                                bValue = b.模板名称 || '';
+                                break;
+                            case 2: // 平均运行时长
+                                aValue = a.平均运行时长_数值 || 0;
+                                bValue = b.平均运行时长_数值 || 0;
+                                break;
+                            case 3: // 发起流程数
+                                aValue = a.发起流程数 || 0;
+                                bValue = b.发起流程数 || 0;
+                                break;
+                            case 4: // 完成流程数
+                                aValue = a.完成环比 || 0;
+                                bValue = b.完成环比 || 0;
+                                break;
+                            default:
+                                return 0;
+                        }
+                        break;
+                }
+                
+                // 比较值
+                if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    const result = aValue.localeCompare(bValue, 'zh-CN');
+                    return currentSortOrder === 'asc' ? result : -result;
+                } else {
+                    const result = aValue - bValue;
+                    return currentSortOrder === 'asc' ? result : -result;
+                }
+            });
+            
+            // 重新渲染表格内容
+            const tableBody = document.getElementById('tableBody');
+            const tableHeader = document.getElementById('tableHeader');
+            const headers = Array.from(tableHeader.querySelectorAll('th')).map(th => th.textContent);
+            
+            switch(tableType) {
+                case 'flowRanking':
+                    renderFlowRankingTableBody(tableBody, sortedData);
+                    break;
+                case 'durationRanking':
+                    renderDurationRankingTableBody(tableBody, sortedData);
+                    break;
+                case 'categoryDuration':
+                    renderCategoryDurationTableBody(tableBody, sortedData);
+                    break;
+            }
+        }
+        
+        // 单独渲染表格内容的函数
+        function renderFlowRankingTableBody(bodyContainer, data) {
+            bodyContainer.innerHTML = '';
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.模板名称 || '-'}</td>
+                    <td>${(item.发起流程数 || 0).toLocaleString()}</td>
+                    <td>${(item.完成环比 || 0).toLocaleString()}</td>
+                    <td>${item.平均运行时长 || '-'}</td>
+                    <td>${item.环比 || '-'}</td>
+                    <td>${item.同比 || '-'}</td>
+                `;
+                bodyContainer.appendChild(row);
+            });
+        }
+        
+        function renderDurationRankingTableBody(bodyContainer, data) {
+            bodyContainer.innerHTML = '';
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.模板名称 || '-'}</td>
+                    <td>${item.平均运行时长 || '-'}</td>
+                    <td>${(item.发起流程数 || 0).toLocaleString()}</td>
+                    <td>${(item.完成环比 || 0).toLocaleString()}</td>
+                    <td>${item.平均超期时长 || '-'}</td>
+                `;
+                bodyContainer.appendChild(row);
+            });
+        }
+        
+        function renderCategoryDurationTableBody(bodyContainer, data) {
+            bodyContainer.innerHTML = '';
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.模板名称 || '-'}</td>
+                    <td>${item.平均运行时长 || '-'}</td>
+                    <td>${(item.发起流程数 || 0).toLocaleString()}</td>
+                    <td>${(item.完成环比 || 0).toLocaleString()}</td>
+                `;
+                bodyContainer.appendChild(row);
+            });
         }
     </script>
 </body>
